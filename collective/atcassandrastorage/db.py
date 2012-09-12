@@ -27,32 +27,36 @@ import logging
 import pycassa
 import urlparse
 
+from pycassa.pool import ConnectionPool
 from collective.atcassandrastorage import settings
 
 logger = logging.getLogger("collective.atcassandrastorage")
 
+
 def get_client(keyspace):
     config = settings.get_config()
-
     logger.info("get_client: servers: %s, timeout: %s, user: %s, pass: %s" % (
         config.servers,
         config.connection_timeout,
         config.username,
         config.password))
 
-    client = pycassa.connect_thread_local(
-                config.servers,
-                timeout=config.connection_timeout
-            )
+    # client = pycassa.connect_thread_local(
+    #             keyspace="MyKeyspace",
+    #             servers=config.servers,
+    #             timeout=config.connection_timeout
+    #         )
 
-    cred = dict(username=config.username, password=config.password)
-    client.login(keyspace, cred)
+    # cred = dict(username=config.username, password=config.password)
+    # client.login(keyspace, cred)
+    client = ConnectionPool(keyspace, config.servers)
     logger.info("get_client => %s" % repr(client))
     return client
 
+
 def get_column_family(keyspace, name):
     client = get_client(keyspace)
-    return pycassa.ColumnFamily(client, keyspace, name)
+    return pycassa.ColumnFamily(client, name)
 
 
 

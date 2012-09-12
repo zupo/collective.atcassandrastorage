@@ -45,7 +45,7 @@ class ColumnFamily(object):
     def __init__(self, session, name):
         self.session = session
         self.name = name
-        self.column_family = pycassa.ColumnFamily(session.client, session.keyspace, name)
+        self.column_family = pycassa.ColumnFamily(session.client, name)
         self.clear()
 
     def clear(self):

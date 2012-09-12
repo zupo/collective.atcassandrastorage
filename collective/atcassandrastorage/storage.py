@@ -119,6 +119,7 @@ class CassandraFieldStorage(Storage):
             value = str(value) # BaseUnit
 
         self.data.insert(key, {name: value.encode(CassandraFieldStorage.encoding)})
+        self.data.flush()
 
     security.declarePrivate('unset')
     def unset(self, name, instance, **kwargs):
